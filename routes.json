@@ -13,7 +13,7 @@
     {
       "errorType": "Unauthenticated",
       "statusCode": "302",
-      "serve": "/login.html"
+      "serve": "/.auth/login/aad"
     }
   ],
   "defaultHeaders": {
