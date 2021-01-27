@@ -1,0 +1,319 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>      
+    <script src="./dagre.min.js"></script>
+
+    <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Serif' rel='stylesheet' type='text/css'>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"> 
+
+    <link rel="stylesheet" href="./slide-in-panel-master/css/reset.css"> <!-- CSS reset -->
+	<link rel="stylesheet" href="./slide-in-panel-master/css/style.css"> <!-- Resource style -->
+	<link rel="stylesheet" href="./slide-in-panel-master/css/demo.css"> <!-- Demo style -->
+
+    <title>CKE - Clininal Knowledge Engine</title>
+
+    <link rel="stylesheet" href="./main.css"> <!-- Demo style -->
+    </head>
+    <body>  
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <!-- Image and text -->
+        <nav class="navbar navbar navbar-dark bg-dark">
+            <div class="container-fluid align-items-center">
+                <a class="navbar-brand header-logo" href="#">
+                    HUMANA
+                </a>
+                <div class="header-title">CLINICAL RULE ENGINE</div>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+        </nav>
+            
+        <div class="live map">
+            <svg><g/></svg>
+        </div>
+        
+        <script src="./func-map.js"></script>
+
+        <script>
+                    
+            // Set up zoom support
+            var svg = d3.select("svg"),
+                inner = svg.select("g"),
+                zoom = d3.zoom().on("zoom", function() {
+                inner.attr("transform", d3.event.transform);
+                });
+            svg.call(zoom);
+        
+            var render = new dagreD3.render();
+        
+            // Top to bottomlayout
+            var g = new dagreD3.graphlib.Graph({compound:true});
+            g.setGraph({
+            nodesep: 70,
+            ranksep: 50,
+            rankdir: "TB",
+            marginx: 30,
+            marginy: 30
+            });
+            
+            var stages = func_map["stages"]
+            var edges = func_map["links"]
+
+            function getStageDataFromId(stageId)
+            {
+                for(i=0;i<stages.length;i++)
+                {
+                    if (stageId == stages[i].id)
+                        return stages[i]
+                }
+
+                return null;
+            }
+
+
+            function draw(isUpdate) 
+            {
+                
+
+                g.setNode('dp-level', 
+                    {                        
+                        label: "DATA SOURCES",
+                        rx: 5,
+                        ry: 5,
+                        padding: 0,
+                        style: "fill:#666"          
+                    });
+
+                stages.forEach(stage => 
+                {
+                    var className = (stage.type == "DIMENSION") ? "running" : "stopped";
+                    var id = stage.id
+                    var groupId = ""
+                    var dbid = id+"-TT"                                                                                
+                    
+                    if (stage.output != "")
+                    {
+                        groupId = stage.id+"-group"                                                              
+                    }                                                            
+                    
+                    var html = ""
+
+                    if (stage.type == "SOURCE")
+                    {
+                        html = "<div class=dbcontainer>";
+                        html += "<div class=oval-src></div>";
+                        html += "<div class=sqaure>"+stage.name+"</div>";        
+                        html += "</div>"; 
+                        className = "dbnode"
+                        g.setParent(id, "dp-level") 
+                    }
+                    else
+                    {
+                        var html = "<div>";
+                        html += "<span class=status></span>";
+                        html += "<div class=consumers>"+id+"</div>";
+                        html += "<div class=name>"+stage.name+"</div>";
+                        html += "<div class=queue>"+stage.desc+"</div>";
+                        html += "</div>";
+                    }
+
+                    g.setNode(id, 
+                    {
+                        labelType: "html",
+                        label: html,
+                        rx: 5,
+                        ry: 5,
+                        padding: 0,
+                        class: className          
+                    });
+
+                    if (groupId != "")
+                    {
+                        g.setNode(groupId, 
+                            {
+                                labelType: "html",
+                                label: groupId,
+                                style: 'fill:#666'
+                            });
+                        
+                        g.setParent(id, groupId)                                                
+                    }
+
+                                                                
+                    if (stage.output != "")
+                    {
+                        var dbhtml = "<div class=dbcontainer>";
+                        dbhtml += "<div class=oval></div>";
+                        dbhtml += "<div class=sqaure>"+stage.output+"</div>";        
+                        dbhtml += "</div>"; 
+                        
+                        g.setNode(dbid, 
+                        {
+                            labelType: "html",
+                            label: dbhtml,
+                            rx: 5,
+                            ry: 5,
+                            padding: 0,
+                            class: "dbnode"          
+                        });
+                                    
+                        g.setEdge(id, dbid, 
+                        {
+                            label: "",
+                            width: 50
+                        });
+
+                        if (groupId != "")
+                            g.setParent(dbid, groupId)
+                        
+                    }
+                });
+
+                // Build edges
+                edges.forEach(edge =>
+                {
+                    var src = edge["source"]
+                    var targets = edge["targets"]
+                    targets.forEach(target=>
+                    {
+                        g.setEdge(src, target, 
+                        {
+                            label: "",
+                            width: 50
+                        });
+                    })                    
+                })
+        
+                inner.call(render, g);
+
+                var selections = inner.selectAll("g.node"); 
+                selections.on('click', function (d) { triggerOpen(d); });
+            
+                // Zoom and scale to fit
+                var graphWidth = g.graph().width + 80;
+                var graphHeight = g.graph().height + 40;
+                var width = parseInt(svg.style("width").replace(/px/, ""));
+                var height = parseInt(svg.style("height").replace(/px/, ""));
+                var zoomScale = Math.min(width / graphWidth, height / graphHeight);
+                var translateX = (width / 2) - ((graphWidth * zoomScale) / 2)
+                var translateY = (height / 2) - ((graphHeight * zoomScale) / 2);
+                var svgZoom = isUpdate ? svg.transition().duration(500) : svg;
+                svgZoom.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(zoomScale));
+              
+
+            }
+            
+            
+
+            // Do some mock queue status updates
+            // setInterval(function() {
+            //   var stoppedWorker1Count = workers["elasticsearch-writer"].count;
+            //   var stoppedWorker2Count = workers["meta-enricher"].count;
+            //   for (var id in workers) {
+            //     workers[id].count = Math.ceil(Math.random() * 3);
+            //     if (workers[id].inputThroughput) workers[id].inputThroughput = Math.ceil(Math.random() * 250);
+            //   }
+            //   workers["elasticsearch-writer"].count = stoppedWorker1Count + Math.ceil(Math.random() * 100);
+            //   workers["meta-enricher"].count = stoppedWorker2Count + Math.ceil(Math.random() * 100);
+            //   draw(true);
+            // }, 1000);
+        
+            // // Do a mock change of worker configuration
+            // setInterval(function() {
+            //   workers["elasticsearch-monitor"] = {
+            //     "consumers": 0,
+            //     "count": 0,
+            //     "inputQueue": "elasticsearch-writer",
+            //     "inputThroughput": 50
+            //   }
+            // }, 5000);
+        
+            // Initial draw, once the DOM is ready
+            document.addEventListener("DOMContentLoaded", draw);
+        </script>
+
+        <div class="cd-panel cd-panel--from-right js-cd-panel-main">
+            <header class="cd-panel__header">
+                <h1 class="cd-panel__header_title">Data</h1>
+                <a href="#0" class="cd-panel__close js-cd-close">Close</a>
+            </header>
+
+            <div class="cd-panel__container bg-dark">
+                <div class="cd-panel__content">
+                    <form>
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">ID</label>
+                            <div class="col-sm-10">
+                              <label class="col-form-label" id="input_stage_id">1119-001</label>
+                            </div>
+                        </div> 
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">NAME</label>
+                            <div class="col-sm-10">
+                              <label class="col-form-label" id="input_stage_name"></label>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label for="inputEmail3" class="col-sm-2 col-form-label">DESCRIPTION</label>
+                            <div class="col-sm-10">
+                              <label class="col-form-label" id="input_stage_desc"></label>
+                            </div>
+                        </div>                       
+                        <!-- <div class="mb-3 form-check">
+                          <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                          <label class="form-check-label" for="exampleCheck1">GLOBAL?</label>
+                        </div> -->
+                        <div class="mb-3" id="func-text-area">
+                            <label for="exampleFormControlTextarea1" class="form-label">FUNCTION DEFINITION</label>
+                            <textarea class="form-control textarea-lg" id="input_stage_func_def" rows="10">
+
+                            </textarea>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+
+                        <div id="content-image" hidden="true">                             
+                            <img src="sample1.png" alt="test data" />
+                        </div>
+
+
+                    </form>
+
+                    
+                    
+                </div> <!-- cd-panel__content -->
+            </div> <!-- cd-panel__container -->
+        </div> <!-- cd-panel -->
+        <script src="./slide-in-panel-master/js/main.js"></script>
+
+        <div draggable="true" id="rule-def-panel">
+            <!-- Include a header DIV with the same name as the draggable DIV, followed by "header" -->
+            <div id="mydivheader"> RULE # 1119 DEFINITION</div>
+            <ul>
+                <li>CALCULATE MBRS.AGE</li>
+                <li>FILTER all MBRS.AGE greater than 18</li>
+                <li>FILTER all MBRS_COV.CONT_ENROLL greater than 45</li>
+                <li>FILTER all MBRS_COV.CONT_ENROLL greater than 45 as on runDate as MBRS_WITH_CONT_ENROLL</li>
+                <li>FILTER all MED_CLAIMS.SDR_PERSON_ID in MBRS_WITH_CONT_ENROLL.SDR_PERSON_ID AS MED_CLAIMS_FIL</li>
+                <li>FILTER all LAB_CLAIMS.SDR_PERSON_ID in MBRS_WITH_CONT_ENROLL.SDR_PERSON_ID AS LAB_CLAIMS_FIL</li>
+                <li>JOIN RX_CLAIMS and NDC_XREF_DATASET</li>
+                <li>FILTER all RX_CLAIMS.SDR_PERSON_ID in MBRS_WITH_CONT_ENROLL.SDR_PERSON_ID AS RX_CLAIMS_FIL</li>
+                <li>CALCULATE HEDIS_ACUTE_INPATIENT from #MED_CLAIMS_FIL</li>
+                <li>CALCULATE HEDIS_NON_ACUTE_INPATIENT from #MED_CLAIMS_FIL</li>
+                <li>CALCULATE HAS_SERUM_POTASSIUM from #LAB_CLAIMS_FIL</li>
+                <li>CALCULATE HAS_SERUM_CRETININE from #LAB_CLAIMS_FIL</li>
+                <li>CALCULATE PCD from #RX_CLAIMS_FIL</li>
+                <li>JOIN ALL MEMBERS #MBRS_WITH_CONT_ENROLL, #MED_CLAIMS_FIL, #LAB_CLAIMS_FIL, #RX_CLAIMS_FIL AS #ELIG_MBRS</li>
+                <li>GENERATE OUTPUT FROM ELIG_MBRS</li>
+            </ul>
+            <div class="mb-3" id="rule-item-area">                
+                <textarea class="form-control textarea-lg" id="input_stage_func_def" rows="5">
+                </textarea>
+            </div>
+        </div>
+  </body>
+</html>

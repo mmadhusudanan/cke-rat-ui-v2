@@ -1,0 +1,373 @@
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>      
+    <script src="./dagre.min.js"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" crossorigin="anonymous"> 
+
+    <title>Hello, world!</title>
+
+        <style>
+
+            body {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+            background: #333;
+            }
+            .dbcontainer
+            {
+                height: 150px;
+                margin-top: -15px;
+            }    
+            .oval {
+            position: relative;            
+            height: 32px;
+            font-size: 12px;
+            border-radius: 85%;      
+            z-index:90999;
+            background:darkgray;
+            }
+
+            .square {
+            position: relative;
+            float: left;      
+            height: 100px;
+            font-size: 12px;            
+            }
+            
+            @-webkit-keyframes flash {
+            0%, 50%, 100% {
+                opacity: 1;
+            }
+        
+            25%, 75% {
+                opacity: 0.2;
+            }
+            }
+        
+            @keyframes flash {
+            0%, 50%, 100% {
+                opacity: 1;
+            }
+        
+            25%, 75% {
+                opacity: 0.2;
+            }
+            }
+        
+            .warn {
+            -webkit-animation-duration: 5s;
+            animation-duration: 5s;
+            -webkit-animation-fill-mode: both;
+            animation-fill-mode: both;
+            -webkit-animation-iteration-count: 1;
+            animation-iteration-count: 1;
+            }
+        
+            .live.map {
+            width: 100%;
+            height: 100%;
+            }
+        
+            svg {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            }
+        
+            .live.map text {
+            font-weight: 300;
+            font-size: 14px;
+            }
+            
+            .live.map .node.dbnode rect{
+            width: 200px;
+            max-height: 150px;  
+            fill:gray;
+            }
+
+            .node.dbnode foreignObject{
+                overflow: visible;
+            }
+
+            .live.map .node rect {
+            stroke-width: 1.5px;
+            stroke: #bbb;
+            fill: #666;
+            overflow: visible;
+            }
+        
+            .live.map .status {
+            height: 100%;
+            width: 15px;
+            display: block;
+            float: left;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+            margin-right: 4px;
+            }
+        
+            .live.map .running .status {
+            background-color: #7f7;
+            }
+        
+            .live.map .running.warn .status {
+            background-color: #ffed68;
+            }
+        
+            .live.map .stopped .status {
+            background-color: #f77;
+            }
+        
+            .live.map .warn .queue {
+            color: #f77;
+            }
+        
+            .warn {
+            -webkit-animation-name: flash;
+            animation-name: flash;
+            }
+        
+            .live.map .consumers {
+            margin-right: 2px;
+            }
+        
+            .live.map .consumers,
+            .live.map .name {
+            margin-top: 4px;
+            }
+        
+            .live.map .consumers:after {
+            content: "x";
+            }
+        
+            .live.map .queue {
+            display: block;
+            float: left;
+            width: 130px;
+            height: 20px;
+            font-size: 12px;
+            margin-top: 2px;
+            }
+        
+            
+
+            .live.map .node g div {
+            width: 200px;
+            max-height: 150px;
+            color: #fff;
+            overflow: visible;
+            fill: #333;
+            }
+
+
+            .live.map .node g div span.consumers {
+            display: inline-block;
+            width: 20px;
+            }
+        
+            .live.map .edgeLabel text {
+            width: 50px;
+            fill: #fff;
+            }
+        
+            .live.map .edgePath path {
+            stroke: #999;
+            stroke-width: 1.5px;
+            fill: #999;
+            }
+        </style>
+    </head>
+    <body>  
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+        <!-- Image and text -->
+        <nav class="navbar navbar navbar-dark bg-dark">
+            <a class="navbar-brand" href="#"><img src="/docs/4.0/assets/brand/bootstrap-solid.svg" width="30" height="30" class="d-inline-block align-top" alt="">HUMANA</a>
+        </nav>
+            
+        <div class="live map">
+            <svg><g/></svg>
+        </div>
+    
+        <script>
+        
+            var workers = {
+            "identifier": {
+                "consumers": 2,
+                "count": 20
+            },
+            "lost-and-found": {
+                "consumers": 1,
+                "count": 1,
+                "inputQueue": "identifier",
+                "inputThroughput": 50
+            },
+            "monitor": {
+                "consumers": 1,
+                "count": 0,
+                "inputQueue": "identifier",
+                "inputThroughput": 50
+            },
+            "meta-enricher": {
+                "consumers": 4,
+                "count": 9900,
+                "inputQueue": "identifier",
+                "inputThroughput": 50
+            },
+            "geo-enricher": {
+                "consumers": 2,
+                "count": 1,
+                "inputQueue": "meta-enricher",
+                "inputThroughput": 50
+            },
+            "elasticsearch-writer": {
+                "consumers": 0,
+                "count": 9900,
+                "inputQueue": "geo-enricher",
+                "inputThroughput": 50
+            }
+            };
+        
+            // Set up zoom support
+            var svg = d3.select("svg"),
+                inner = svg.select("g"),
+                zoom = d3.zoom().on("zoom", function() {
+                inner.attr("transform", d3.event.transform);
+                });
+            svg.call(zoom);
+        
+            var render = new dagreD3.render();
+        
+            // Top to bottomlayout
+            var g = new dagreD3.graphlib.Graph();
+            g.setGraph({
+            nodesep: 70,
+            ranksep: 50,
+            rankdir: "TB",
+            marginx: 20,
+            marginy: 20
+            });
+        
+            function draw(isUpdate) 
+            {
+            for (var id in workers) 
+            {
+                var worker = workers[id];
+                var className = worker.consumers ? "running" : "stopped";
+                if (worker.count > 10000) {
+                className += " warn";
+                }
+                var html = "<div>";
+                html += "<span class=status></span>";
+                html += "<span class=consumers>"+worker.consumers+"</span>";
+                html += "<span class=name>"+id+"</span>";
+                html += "<span class=queue><span class=counter>"+worker.count+"</span></span>";
+                html += "</div>";
+                g.setNode(id, {
+                labelType: "html",
+                label: html,
+                rx: 5,
+                ry: 5,
+                padding: 0,
+                class: className          
+                });
+
+                var dbhtml = "<div class=dbcontainer>";
+                dbhtml += "<div class=oval>"+worker.consumers+"</div>";
+                dbhtml += "<div class=sqaure>"+id+"</div>";        
+                dbhtml += "</div>"; 
+                
+                g.setNode(id+"-db", {
+                labelType: "html",
+                label: dbhtml,
+                rx: 5,
+                ry: 5,
+                padding: 0,
+                class: "dbnode"          
+                });
+
+                // g.comp.on('mouseover', function(d) {
+                //         console.log('mouseover');
+                //     })
+        
+                if (worker.inputQueue) 
+                {
+                g.setEdge(worker.inputQueue, id, {
+                    label: worker.inputThroughput + "/s",
+                    width: 40
+                });
+                }
+            }
+        
+            inner.call(render, g);
+
+            var selections = inner.selectAll("g.node"); 
+            selections.on('click', function (d) { console.log(d); });
+        
+            // Zoom and scale to fit
+            var graphWidth = g.graph().width + 80;
+            var graphHeight = g.graph().height + 40;
+            var width = parseInt(svg.style("width").replace(/px/, ""));
+            var height = parseInt(svg.style("height").replace(/px/, ""));
+            var zoomScale = Math.min(width / graphWidth, height / graphHeight);
+            var translateX = (width / 2) - ((graphWidth * zoomScale) / 2)
+            var translateY = (height / 2) - ((graphHeight * zoomScale) / 2);
+            var svgZoom = isUpdate ? svg.transition().duration(500) : svg;
+            svgZoom.call(zoom.transform, d3.zoomIdentity.translate(translateX, translateY).scale(zoomScale));
+
+            d3.selectAll('svg g.comp')
+                    .on('mouseover', function(d) {
+                        console.log('mouseover');
+                    })
+                    .on('mouseout', function(d) {
+                        console.log('mouseout');
+                    })
+                    .on('mousedown', function(d) {
+                        console.log('mousedown');
+                    })
+                    .on('mouseup', function(d) {
+                        console.log('mouseup');
+                    });
+
+
+            }
+            
+            
+
+            // Do some mock queue status updates
+            // setInterval(function() {
+            //   var stoppedWorker1Count = workers["elasticsearch-writer"].count;
+            //   var stoppedWorker2Count = workers["meta-enricher"].count;
+            //   for (var id in workers) {
+            //     workers[id].count = Math.ceil(Math.random() * 3);
+            //     if (workers[id].inputThroughput) workers[id].inputThroughput = Math.ceil(Math.random() * 250);
+            //   }
+            //   workers["elasticsearch-writer"].count = stoppedWorker1Count + Math.ceil(Math.random() * 100);
+            //   workers["meta-enricher"].count = stoppedWorker2Count + Math.ceil(Math.random() * 100);
+            //   draw(true);
+            // }, 1000);
+        
+            // // Do a mock change of worker configuration
+            // setInterval(function() {
+            //   workers["elasticsearch-monitor"] = {
+            //     "consumers": 0,
+            //     "count": 0,
+            //     "inputQueue": "elasticsearch-writer",
+            //     "inputThroughput": 50
+            //   }
+            // }, 5000);
+        
+            // Initial draw, once the DOM is ready
+            document.addEventListener("DOMContentLoaded", draw);
+        </script>
+    
+  </body>
+</html>

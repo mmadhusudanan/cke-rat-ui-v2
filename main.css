@@ -1,0 +1,236 @@
+body {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 0;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serf;
+    background: #333;
+    }
+
+    .textarea-lg{
+        font-size: 32px;
+    }
+    .dbcontainer
+    {
+        height: 150px;
+        margin-top: -15px;
+    }    
+    .oval {
+    position: relative;            
+    height: 32px;
+    font-size: 12px;
+    border-radius: 85%;      
+    z-index:90999;
+    background:darkgray;
+    }
+
+    .oval-src {
+        position: relative;            
+        height: 32px;
+        font-size: 12px;
+        border-radius: 85%;      
+        z-index:90999;
+        background:lightblue;
+        }
+
+    .square {
+    position: relative;
+    float: left;
+    text-align: center;          
+    height: 100px;
+    font-size: 12px;
+    background-color: #f77; 
+    }
+
+    @-webkit-keyframes flash {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+
+    25%, 75% {
+        opacity: 0.2;
+    }
+    }
+
+    @keyframes flash {
+    0%, 50%, 100% {
+        opacity: 1;
+    }
+
+    25%, 75% {
+        opacity: 0.2;
+    }
+    }
+
+    .warn {
+    -webkit-animation-duration: 5s;
+    animation-duration: 5s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-iteration-count: 1;
+    animation-iteration-count: 1;
+    }
+
+    .live.map {
+    width: 100%;
+    height: 100%;
+    }
+
+    svg {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    }
+
+    .live.map text {
+    font-weight: 300;
+    font-size: 14px;
+    }
+    
+    .live.map .node.dbnode rect{
+    width: 300px;
+    max-height: 150px;  
+    fill:slategray;    
+    }
+
+    .node.dbnode foreignObject{
+        overflow: visible;
+    }
+
+    .live.map .node rect {
+    stroke-width: 1.5px;
+    stroke: #bbb;
+    fill: #666;
+    overflow: visible;
+    }
+
+    .live.map .status {
+    height: 100%;
+    width: 15px;
+    display: block;
+    float: left;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    margin-right: 4px;
+    }
+
+    .live.map .running .status {
+    background-color: #7f7;
+    }
+
+    .live.map .running.warn .status {
+    background-color: #ffed68;
+    }
+
+    .live.map .stopped .status {
+    background-color: #f77;
+    }
+
+    .live.map .warn .queue {
+    color: #f77;
+    }
+
+    .warn {
+    -webkit-animation-name: flash;
+    animation-name: flash;
+    }
+
+    .live.map .consumers {
+    margin-right: 2px;
+    }
+
+    .live.map .consumers,
+    .live.map .name {
+    margin-top: 4px;
+    }
+
+    .live.map .consumers:after {
+    content: "x";
+    }
+
+    .live.map .queue {
+    display: block;
+    float: left;
+    width: 130px;
+    height: 20px;
+    font-size: 12px;
+    margin-top: 2px;
+    }
+
+    
+
+    .live.map .node g div {
+    width: 300px;
+    max-height: 150px;
+    color: #fff;
+    overflow: visible;
+    fill: #333;
+    }
+
+    .live.map .node.dbnode .label{
+        display: flex;
+        align-items: center;      
+    }
+
+
+    .live.map .node g div span.consumers {
+    display: inline-block;
+    width: 20px;
+    }
+
+    .live.map .edgeLabel text {
+    width: 50px;
+    fill: #fff;
+    }
+
+    .live.map .edgePath path {
+    stroke: #999;
+    stroke-width: 1.5px;
+    fill: #999;
+    }
+    .header-logo{
+        color:#7f7 !important ;  
+        font-size: large;             
+        font-weight: bolder;
+    }
+    .header-title{
+        font-weight: bold;
+        font-size: large;
+        align-items: center;                
+        color:#fff;
+    }
+
+    #rule-def-panel {
+        position: absolute;
+        z-index: 9;
+        width:500px;
+        background-color: #393434;
+        border: 1px solid #d3d3d3;
+        text-align: left;
+        left: 1%;
+        top:10%;
+        height: 80%;
+        resize: both;      
+        min-width: 300px;
+        min-height: 500px;
+    }
+      
+      #mydivheader {
+        padding: 10px;
+        cursor: move;   
+        text-align: left;     
+        z-index: 10;
+        background-color: black;
+        color: #fff;
+      }
+
+      ul li{
+          padding: 15 0 15 5;
+          font-size: 14px;
+          color:white
+      }
+      ul li { background-color: rgb(101, 100, 103)}
+      ul li:nth-child(even)  { background-color:rgb(139, 140, 145)}
