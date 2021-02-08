@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rule Engine Design &mdash; DH&amp;A Clinical Rule Engine 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rule Engine Output" href="rule-output.html" />
+    <link rel="prev" title="Introduction" href="../data-products/source-details.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DH&A Clinical Rule Engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">INTRO</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">CRE Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#current-state">Current state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#the-oppurtuinity">The Oppurtuinity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#the-goal">The GOAL</a></li>
+</ul>
+<p class="caption"><span class="caption-text">DATA SOURCES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data-products/source-details.html">Introduction</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CRE (Clinical Rule Engine)</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rule Engine Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#design-considerations">Design Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rule-output.html">Rule Engine Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CREAT (CRE-Authoring-Tool)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CREAT/design_architecture.html">Design and Architecture</a></li>
+</ul>
+<p class="caption"><span class="caption-text">VSMGMT (Valueset Management Tool)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#deployment">Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#workflow">Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#integration">Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#testing">Testing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">INFRA</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/services.html">SERVICES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/databricks.html">Databricks Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/storage.html">DATA STORAGE</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DH&A Clinical Rule Engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Rule Engine Design</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/CRE/engine-design.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rule-engine-design">
+<h1>Rule Engine Design<a class="headerlink" href="#rule-engine-design" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="design-considerations">
+<h2>Design Considerations<a class="headerlink" href="#design-considerations" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Ease of authoring.</p>
+<ul>
+<li><p>The system should translate the author’s intent into plannable spark query language. Here since Spark is the choice of technology, the system should be able to transpile business user’s intent into spark sql.</p></li>
+<li><p>The engine should be able to support both novice and advanced users in the authoring capabilites.</p></li>
+<li><p>Should have good documentation capabilites.</p></li>
+<li><p>The output of the Rule Engine should automatically accomodate for future use cases/scenarios.</p></li>
+</ul>
+</li>
+<li><p>Peformance</p>
+<ul>
+<li><p>Should be able to support realtime queries</p></li>
+<li><p>The pipelines should be able to injest and run on incremental data.</p></li>
+</ul>
+</li>
+<li><p>Security</p>
+<ul>
+<li><p>Protect all PII data</p></li>
+<li><p>The app login can use platform’s role based access.</p></li>
+</ul>
+</li>
+<li><p>Auditability</p>
+<ul>
+<li><p>How can the user traceback the rules’s data lineage?</p></li>
+</ul>
+</li>
+<li><p>Versioning.</p>
+<ul>
+<li><p>What happens when a old rule has a bug in it? How will the historical alerts be reprocessed?</p></li>
+<li><p>How are changes in output schema handled for both historical and future rule alerts?</p></li>
+<li><p>How can rule authors be able to test future rollouts? Can we author rules for future rolling periods?</p></li>
+</ul>
+</li>
+<li><p>Configurability</p>
+<ul>
+<li><p>What are app admin configurations?</p></li>
+<li><p>What controls need to be added like:</p>
+<ul>
+<li><p>Access controls.</p></li>
+<li><p>Rule Publishing controls.</p></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Testability</p>
+<ul>
+<li><p>How can the Rules be easily tested?</p></li>
+<li><p>Rule authors should be able to do quick dry runs.</p></li>
+<li><p>How to implement Regression testing for any new code releases?</p></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="rule-output.html" class="btn btn-neutral float-right" title="Rule Engine Output" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../data-products/source-details.html" class="btn btn-neutral float-left" title="Introduction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Humana
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

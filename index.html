@@ -4,6 +4,13 @@
     <meta charset="utf-8">
     <script src="https://d3js.org/d3.v5.min.js" charset="utf-8"></script>      
     <script src="./dagre.min.js"></script>
+    <!-- Require for jquuery mentions lib-->
+    <script src='./jslibs/jquery.min.js' type='text/javascript'></script>                       
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.12.0/underscore-min.js"></script>       
+    <script src='./jslibs/jquery-mentions-input/jquery.mentionsInput.js' type='text/javascript'></script>                                       
+    <script src='./jslibs/jquery-mentions-input/lib/jquery.elastic.js' type='text/javascript'></script>                                       
+    <script src='./jslibs/jquery-mentions-input/lib/jquery.events.input.js' type='text/javascript'></script>                                       
+    <link rel="stylesheet" href="./jslibs/jquery-mentions-input/jquery.mentionsInput.css"> <!-- CSS reset -->
 
     <link href='https://fonts.googleapis.com/css?family=Droid+Sans:400,700|Droid+Serif' rel='stylesheet' type='text/css'>
 
@@ -40,6 +47,9 @@
         <script src="./func-map.js"></script>
 
         <script>
+
+
+
                     
             // Set up zoom support
             var svg = d3.select("svg"),
@@ -311,8 +321,9 @@
                 <li>GENERATE OUTPUT FROM ELIG_MBRS</li>
             </ul>
             <div class="mb-3" id="rule-item-area">                
-                <textarea class="form-control textarea-lg" id="input_stage_func_def" rows="5">
+                <textarea class="form-control textarea-lg mention" id="input_stage_func_def" rows="5">
                 </textarea>
+                <script src="./intellisense.js"></script>
             </div>
         </div>
   </body>

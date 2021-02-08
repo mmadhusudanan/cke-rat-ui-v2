@@ -1,0 +1,437 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Rule Engine Output &mdash; DH&amp;A Clinical Rule Engine 1.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Design and Architecture" href="../CREAT/design_architecture.html" />
+    <link rel="prev" title="Rule Engine Design" href="engine-design.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home" alt="Documentation Home"> DH&A Clinical Rule Engine
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">INTRO</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">CRE Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#current-state">Current state</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#the-oppurtuinity">The Oppurtuinity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html#the-goal">The GOAL</a></li>
+</ul>
+<p class="caption"><span class="caption-text">DATA SOURCES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../data-products/source-details.html">Introduction</a></li>
+</ul>
+<p class="caption"><span class="caption-text">CRE (Clinical Rule Engine)</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="engine-design.html">Rule Engine Design</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Rule Engine Output</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#data-models">Data Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cke-alert-table">CKE_ALERT_TABLE</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cke-source-data-xref-table">CKE_SOURCE_DATA_XREF_TABLE</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">CREAT (CRE-Authoring-Tool)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../CREAT/design_architecture.html">Design and Architecture</a></li>
+</ul>
+<p class="caption"><span class="caption-text">VSMGMT (Valueset Management Tool)</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#deployment">Deployment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#workflow">Workflow</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#integration">Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../vsmgmt/value-set-mgr.html#testing">Testing</a></li>
+</ul>
+<p class="caption"><span class="caption-text">INFRA</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/services.html">SERVICES</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/databricks.html">Databricks Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../INFRA/storage.html">DATA STORAGE</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">DH&A Clinical Rule Engine</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Rule Engine Output</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/CRE/rule-output.md.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="rule-engine-output">
+<h1>Rule Engine Output<a class="headerlink" href="#rule-engine-output" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="data-models">
+<h2>Data Models<a class="headerlink" href="#data-models" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="cke-alert-table">
+<h3>CKE_ALERT_TABLE<a class="headerlink" href="#cke-alert-table" title="Permalink to this headline">¶</a></h3>
+<hr class="docutils" />
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>S.no</th>
+<th>Key</th>
+<th>Name</th>
+<th>Type</th>
+<th>Size</th>
+<th>Nillable</th>
+<th>Default</th>
+<th>Valid Values</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PK</td>
+<td>alert_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>Auto generated UUID</td>
+<td>-</td>
+<td>Should come up with a coded autogenerated sequence</td>
+</tr>
+<tr>
+<td>2</td>
+<td>FK</td>
+<td>rule_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>-</td>
+<td>-</td>
+<td>The Rule id that triggered this alert</td>
+</tr>
+<tr>
+<td>3</td>
+<td>FK</td>
+<td>member_id</td>
+<td>NUMBER</td>
+<td></td>
+<td>FALSE</td>
+<td>-</td>
+<td>-</td>
+<td></td>
+</tr>
+<tr>
+<td>9</td>
+<td>FK</td>
+<td>job_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>-</td>
+<td>-</td>
+<td>Linking the rule output to the job that triggered it</td>
+</tr>
+<tr>
+<td>4</td>
+<td></td>
+<td>alert_code</td>
+<td>VARCHAR</td>
+<td>5</td>
+<td>FALSE</td>
+<td>-</td>
+<td>GIC,</td>
+<td>-</td>
+</tr>
+<tr>
+<td>5</td>
+<td></td>
+<td>alert_priority</td>
+<td>CHAR</td>
+<td>2</td>
+<td>FALSE</td>
+<td>-</td>
+<td>P0, P1, P2, P3</td>
+<td>The definitions can be expanded later</td>
+</tr>
+<tr>
+<td>6</td>
+<td></td>
+<td>alert_gen_date</td>
+<td>DATETIME</td>
+<td>-</td>
+<td>FALSE</td>
+<td>CURRENT DATETIME</td>
+<td>-</td>
+<td></td>
+</tr>
+<tr>
+<td>7</td>
+<td></td>
+<td>alert_eff_st_date</td>
+<td>DATETIME</td>
+<td>-</td>
+<td>TRUE</td>
+<td>CURRENT DATETIME</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>8</td>
+<td></td>
+<td>alert_eff_end_date</td>
+<td>DATETIME</td>
+<td>-</td>
+<td>TRUE</td>
+<td>CURRENT DATETIME</td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+<hr class="docutils" />
+<div class="section" id="cke-source-data-xref-table">
+<h3>CKE_SOURCE_DATA_XREF_TABLE<a class="headerlink" href="#cke-source-data-xref-table" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<thead>
+<tr>
+<th>S.no</th>
+<th>Key</th>
+<th>Name</th>
+<th>Type</th>
+<th>Size</th>
+<th>Nillable</th>
+<th>Default</th>
+<th>Valid Values</th>
+<th>Remarks</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>PK/FK</td>
+<td>xref_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>Auto generated UUID</td>
+<td>-</td>
+<td></td>
+</tr>
+<tr>
+<td>2</td>
+<td>PK</td>
+<td>alert_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>-</td>
+<td>Reference id</td>
+<td></td>
+</tr>
+<tr>
+<td>3</td>
+<td></td>
+<td>source_dp_code</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>-</td>
+<td>"MBR_CLMS", "LAB_CLMS", "PHARMACY", "LHR"</td>
+<td>All the possible sources</td>
+</tr>
+<tr>
+<td>4</td>
+<td></td>
+<td>source_dp_rec_lnk_id</td>
+<td>VARCHAR</td>
+<td>32</td>
+<td>FALSE</td>
+<td>-</td>
+<td>This will point to the record of the data product</td>
+<td></td>
+</tr>
+</tbody>
+</table></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../CREAT/design_architecture.html" class="btn btn-neutral float-right" title="Design and Architecture" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="engine-design.html" class="btn btn-neutral float-left" title="Rule Engine Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2020, Humana
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
